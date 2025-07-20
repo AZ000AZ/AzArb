@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 </head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 min-h-screen">
 
@@ -25,12 +26,23 @@
         <div class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-3xl text-2xl font-bold shadow-xl transform hover:scale-105 transition cursor-pointer">
             <i class="fas fa-compass me-2"></i> رحلاتي
         </div>
-
         <!-- Navigation (Ortada) -->
         <nav class="hidden md:flex items-center space-x-6 space-x-reverse">
-            <a href="{{ route('properties.index') }}" class="text-white font-semibold hover:bg-white/20 px-4 py-2 rounded-full transition">الإقامات</a>
-            <a href="{{ route('experiences') }}" class="text-white/70 hover:text-white hover:bg-white/20 px-4 py-2 rounded-full transition">التجارب</a>
-            <a href="{{ route('host') }}" class="text-white/70 hover:text-white hover:bg-white/20 px-4 py-2 rounded-full transition">أصبح مضيفاً</a>
+            <a href="{{ route('home') }}"
+               class="relative text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white">
+                anasayfa
+            </a>
+            <a href="{{ route('properties.index') }}"
+               class="px-4 py-2 rounded-full font-semibold transition
+       {{ request()->routeIs('properties.index') ? 'bg-gradient-to-r from-purple-400 to-purple-600 text-white shadow-lg' : 'text-white/80 hover:text-white hover:bg-white/20' }}">
+                الإقامات
+            </a>
+            <a href="{{ route('experiences.index') }}" class="text-white/70 hover:text-white hover:bg-white/20 px-4 py-2 rounded-full transition">
+                التجارب
+            </a>
+            <a href="{{ route('host') }}" class="text-white/70 hover:text-white hover:bg-white/20 px-4 py-2 rounded-full transition">
+                أصبح مضيفاً
+            </a>
         </nav>
 
         <!-- Icon Group (En Sağ) -->
@@ -62,36 +74,99 @@
     </a>
 </section>
 
+<!-- ✅ Success Message Buraya -->
+@if(session('success'))
+    <div class="max-w-3xl mx-auto mb-6">
+        <div class="bg-green-500 text-white text-center py-3 px-4 rounded-xl shadow-md animate-bounce">
+            {{ session('success') }}
+        </div>
+    </div>
+@endif
 <!-- Search Bar -->
 <section class="py-8">
     <div class="max-w-4xl mx-auto px-4">
         <form method="GET" action="{{ route('properties.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <input type="text" name="location" placeholder="الموقع" class="p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:bg-white/20 focus:border-pink-400">
-            <input type="text" name="date" placeholder="التاريخ" class="p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:bg-white/20 focus:border-pink-400 flatpickr-date">
-            <input type="text" name="guests" placeholder="عدد الضيوف" class="p-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/60 focus:bg-white/20 focus:border-pink-400">
+            <style>
+                select option {
+                    color: black;
+                    background-color: white;
+                }
+
+                input::placeholder {
+                    color: white;
+                }
+            </style>
+
+            <!-- Lokasyon -->
+            <select name="location" class="...">
+                <option value="">اختر الموقع</option>
+                <option value="الرياض" {{ request('location') == 'الرياض' ? 'selected' : '' }}>الرياض</option>
+                <option value="جدة" {{ request('location') == 'جدة' ? 'selected' : '' }}>جدة</option>
+                <option value="الدمام" {{ request('location') == 'الدمام' ? 'selected' : '' }}>الدمام</option>
+                <option value="مكة" {{ request('location') == 'مكة' ? 'selected' : '' }}>مكة</option>
+                <option value="المدينة" {{ request('location') == 'المدينة' ? 'selected' : '' }}>المدينة</option>
+            </select>
+
+
+            <!-- تاريخ -->
+            <input type="text" name="date" value="{{ request('date') }}"
+                   placeholder="اختر التاريخ"
+                   class="..." readonly>
+
+            <!-- عدد الضيوف -->
+            <select name="guests" class="...">
+                <option value="">عدد الضيوف</option>
+                <option value="1" {{ request('guests') == '1' ? 'selected' : '' }}>1</option>
+                <option value="2" {{ request('guests') == '2' ? 'selected' : '' }}>2</option>
+                <option value="3" {{ request('guests') == '3' ? 'selected' : '' }}>3</option>
+                <option value="4+" {{ request('guests') == '4+' ? 'selected' : '' }}>4+</option>
+            </select>
+
+
+            <!-- زر البحث -->
             <button type="submit" class="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold rounded-xl hover:scale-105 transition px-4 py-3">
                 <i class="fas fa-search me-1"></i> بحث
             </button>
+
         </form>
     </div>
 </section>
 
+
 <!-- Category Filters -->
-<section class="py-6">
-    <div class="max-w-5xl mx-auto px-4 flex flex-wrap gap-3 justify-center">
-        @php
-            $categories = ['الكل', 'شاطئية', 'جبلية', 'حضرية', 'تاريخية', 'استوائية'];
-            $selectedCategory = request('category', 'الكل');
-        @endphp
-        @foreach($categories as $category)
-            <a href="{{ route('properties.index', ['category' => $category !== 'الكل' ? $category : null]) }}"
-               class="px-5 py-2 rounded-full font-medium transition hover:scale-105
-               {{ $selectedCategory === $category ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-lg' : 'bg-white/10 text-white hover:bg-white/20' }}">
-                {{ $category }}
-            </a>
-        @endforeach
+<section class="py-8">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-6">
+            <h3 class="text-xl font-bold text-white text-center mb-6">
+                <i class="fas fa-filter ml-2 text-cyan-400"></i>
+                تصفح حسب الفئة
+            </h3>
+            @php
+                $categories = [
+                    ['name' => 'الكل', 'icon' => 'fa-home', 'color' => 'from-cyan-500 to-blue-600'],
+                    ['name' => 'شاطئية', 'icon' => 'fa-umbrella-beach', 'color' => 'from-blue-500 to-teal-600'],
+                    ['name' => 'جبلية', 'icon' => 'fa-mountain', 'color' => 'from-green-500 to-emerald-600'],
+                    ['name' => 'حضرية', 'icon' => 'fa-building', 'color' => 'from-purple-500 to-pink-600'],
+                    ['name' => 'تاريخية', 'icon' => 'fa-landmark', 'color' => 'from-amber-500 to-orange-600'],
+                    ['name' => 'استوائية', 'icon' => 'fa-tree', 'color' => 'from-emerald-500 to-teal-600'],
+                ];
+                $selectedCategory = request('category', 'الكل');
+            @endphp
+
+            <div class="flex flex-wrap gap-3 justify-center">
+                @foreach($categories as $category)
+                    <a href="{{ route('properties.index', ['category' => $category['name'] !== 'الكل' ? $category['name'] : null]) }}"
+                       class="group relative overflow-hidden px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105
+                       {{ $selectedCategory === $category['name'] ? 'bg-gradient-to-r '.$category['color'].' text-white shadow-2xl' : 'bg-white/10 text-white hover:bg-white/20' }}">
+                        <i class="fas {{ $category['icon'] }} inline-block w-4 h-4 ml-2"></i>
+                        {{ $category['name'] }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
     </div>
 </section>
+
 
 <!-- Property Cards -->
 <section class="py-12">
@@ -144,11 +219,10 @@
 </section>
 
 
-<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ar.js"></script>
 <script>
-    flatpickr(".flatpickr-date", {
+    flatpickr(".flatpickr-range", {
         mode: "range",
         locale: "ar",
         dateFormat: "Y-m-d",

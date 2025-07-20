@@ -2,19 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Property;
 use Illuminate\Http\Request;
-use App\Models\Property; // Eğer Property modelin varsa
 
 class PropertyController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Eğer Property modelin varsa:
-        // $properties = Property::latest()->paginate(12);
-        // return view('properties.index', compact('properties'));
+        $query = Property::query();
 
-        // Şimdilik test için boş koleksiyon gönder:
-        $properties = Property::latest()->paginate(12);
+        if ($request->filled('category') && $request->category !== 'الكل') {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->filled('location')) {
+            $query->where('location', $request->location);
+        }
+
+        if ($request->filled('guests')) {
+            $query->where('max_guests', '>=', (int) $request->guests);
+        }
+
+        if ($request->filled('date')) {
+            $dates = explode(' to ', $request->date);
+            if (count($dates) === 2) {
+                $query->whereDate('available_from', '<=', $dates[0])
+                    ->whereDate('available_to', '>=', $dates[1]);
+            }
+        }
+
+        $properties = $query->latest()->paginate(12);
+
         return view('properties.index', compact('properties'));
     }
 
@@ -25,26 +43,70 @@ class PropertyController extends Controller
 
     public function store(Request $request)
     {
-        // Validate and store the property
+        $data = $request->validate([
+            'title' => 'required',
+            'location' => 'nullable',
+            'price' => 'required|integer',
+            'bedrooms' => 'required|integer',
+            'bathrooms' => 'required|integer',
+            'max_guests' => 'required|integer',
+            'rating' => 'nullable|numeric',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'category' => 'required|string',
+            'available_from' => 'nullable|date',
+            'available_to' => 'nullable|date',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('properties', 'public');
+        }
+
+        Property::create($data);
+
+        return redirect()->route('properties.index')->with('success', 'تمت إضافة الإقامة بنجاح');
     }
 
-    public function show($id)
+    public function show(Property $property)
     {
-        // Show a single property
+        return view('properties.show', compact('property'));
     }
 
-    public function edit($id)
+    public function edit(Property $property)
     {
-        return view('properties.edit');
+        return view('properties.edit', compact('property'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Property $property)
     {
-        // Update the property
+        $data = $request->validate([
+            'title' => 'required',
+            'location' => 'nullable',
+            'price' => 'required|integer',
+            'bedrooms' => 'required|integer',
+            'bathrooms' => 'required|integer',
+            'max_guests' => 'required|integer',
+            'rating' => 'nullable|numeric',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'category' => 'required|string',
+            'available_from' => 'nullable|date',
+            'available_to' => 'nullable|date',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('properties', 'public');
+        }
+
+        $property->update($data);
+
+        return redirect()->route('properties.index')->with('success', 'تم تحديث الإقامة بنجاح');
     }
 
-    public function destroy($id)
+    public function destroy(Property $property)
     {
-        // Delete the property
+        $property->delete();
+
+        return redirect()->route('properties.index')->with('success', 'تم حذف الإقامة بنجاح');
     }
 }

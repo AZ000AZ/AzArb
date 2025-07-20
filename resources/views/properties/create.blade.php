@@ -10,22 +10,64 @@
 <div class="container">
     <h1 class="mb-4">إضافة إقامة جديدة</h1>
 
-    <form action="{{ route('properties.store') }}" method="POST">
+    <form action="{{ route('properties.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="mb-3">
             <label for="title" class="form-label">عنوان الإقامة</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="مثال: فيلا مع مسبح">
+            <input type="text" class="form-control" id="title" name="title" required>
         </div>
 
         <div class="mb-3">
             <label for="location" class="form-label">الموقع</label>
-            <input type="text" class="form-control" id="location" name="location" placeholder="مثال: الرياض، حي النرجس">
+            <input type="text" class="form-control" id="location" name="location">
         </div>
 
         <div class="mb-3">
-            <label for="price" class="form-label">السعر لكل ليلة</label>
-            <input type="number" class="form-control" id="price" name="price" placeholder="مثال: 500">
+            <label for="price" class="form-label">السعر لكل ليلة (ر.س)</label>
+            <input type="number" class="form-control" id="price" name="price" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="bedrooms" class="form-label">عدد الغرف</label>
+            <input type="number" class="form-control" id="bedrooms" name="bedrooms" value="1">
+        </div>
+
+        <div class="mb-3">
+            <label for="bathrooms" class="form-label">عدد الحمامات</label>
+            <input type="number" class="form-control" id="bathrooms" name="bathrooms" value="1">
+        </div>
+
+        <div class="mb-3">
+            <label for="max_guests" class="form-label">أقصى عدد ضيوف</label>
+            <input type="number" class="form-control" id="max_guests" name="max_guests" value="1">
+        </div>
+
+        <div class="mb-3">
+            <label for="rating" class="form-label">التقييم</label>
+            <input type="number" step="0.1" class="form-control" id="rating" name="rating" value="4.5">
+        </div>
+
+        <!-- ✅ Kategori Alanı Buraya -->
+        <div class="mb-3">
+            <label for="category" class="form-label">الفئة</label>
+            <select name="category" id="category" class="form-control" required>
+                <option value="الكل">الكل</option>
+                <option value="شاطئية">شاطئية</option>
+                <option value="جبلية">جبلية</option>
+                <option value="حضرية">حضرية</option>
+                <option value="تاريخية">تاريخية</option>
+                <option value="استوائية">استوائية</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">صورة الإقامة</label>
+            <input type="file" class="form-control" id="image" name="image">
+        </div>
+        <div class="mb-3">
+            <label for="image" class="form-label">صورة الإقامة</label>
+            <input type="file" class="form-control" id="image" name="image">
         </div>
 
         <div class="mb-3">

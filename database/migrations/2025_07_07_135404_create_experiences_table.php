@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('experiences', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->decimal('price', 8, 2);
+            $table->string('category');
+            $table->string('city');
+            $table->float('rating')->default(0);
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      */

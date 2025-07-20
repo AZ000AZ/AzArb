@@ -1,5 +1,3 @@
-<!-- resources/views/layouts/app.blade.php -->
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -13,11 +11,16 @@
     <!-- TailwindCDN (lokalde sorun yaşarsan) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- AlpineJS (Dropdownlar ve Modallar için) -->
+    <script src="https://unpkg.com/alpinejs" defer></script>
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- Google Fonts Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    @include('partials.header-scripts')
 
     <style>
         body {
@@ -50,7 +53,9 @@
 
 <body class="bg-gray-100 min-h-screen relative">
 
-@include('partials.header')
+@include('components.interactive-header')
+@include('components.server-status')
+
 
 <main class="py-8">
     @yield('content')
@@ -59,5 +64,6 @@
 @include('partials.footer')
 
 @stack('scripts')
+
 </body>
 </html>

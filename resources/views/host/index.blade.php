@@ -27,8 +27,9 @@
 
             <!-- Navigation (Ortada) -->
             <nav class="hidden md:flex items-center space-x-8 space-x-reverse">
+                <a href="{{ route('home') }}" class="relative text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white">الصفحة الرئسية</a>
                 <a href="{{ route('properties.index') }}" class="relative text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white">الإقامات</a>
-                <a href="{{ route('experiences') }}" class="relative text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white">التجارب</a>
+                <a href="{{ route('experiences.index') }}" class="relative text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white">التجارب</a>
                 <a href="{{ route('host') }}" class="relative text-white font-semibold px-4 py-2 rounded-full hover:bg-white/20 bg-gradient-to-r from-emerald-400 to-teal-500">أصبح مضيفاً</a>
             </nav>
 
@@ -70,6 +71,26 @@
         </a>
     </div>
 </section>
+<section class="py-8 bg-white/10 rounded-xl max-w-3xl mx-auto p-6">
+    <form action="{{ route('host.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+        @csrf
+        <input name="title" placeholder="عنوان الإقامة" class="..." required>
+        <input name="location" placeholder="الموقع" class="..." required>
+        <input name="price" placeholder="السعر" type="number" class="..." required>
+        <input name="bedrooms" placeholder="عدد غرف النوم" type="number" class="..." required>
+        <input name="bathrooms" placeholder="عدد الحمامات" type="number" class="..." required>
+        <input name="max_guests" placeholder="عدد الضيوف الأقصى" type="number" class="..." required>
+        <select name="category" class="..." required>
+            <option value="شاطئية">شاطئية</option>
+            <option value="جبلية">جبلية</option>
+            <!-- Diğer kategori seçenekleri -->
+        </select>
+        <textarea name="description" placeholder="الوصف"></textarea>
+        <input type="file" name="image" accept="image/*">
+        <button type="submit" class="...">أضف الإقامة</button>
+    </form>
+</section>
+
 
 <!-- Stats Section -->
 <section class="py-16 bg-white/5 backdrop-blur-sm">
