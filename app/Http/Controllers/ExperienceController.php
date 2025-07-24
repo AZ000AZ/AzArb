@@ -7,16 +7,24 @@ use App\Models\Experience;
 
 class ExperienceController extends Controller
 {
-    // Listeleme sayfası (tüm deneyimler veya kategoriye göre)
+    // Listing page (all experiences or by category)
     public function index(Request $request)
     {
-        $experiences = Experience::paginate(12);
-        $categories = $this->getCategories();
+        $query = Experience::query();
 
-        return view('experiences.index', compact('experiences', 'categories'));
+        if ($request->filled('category') && $request->category !== 'All') {
+            $query->where('category', $request->category);
+        }
+
+        $experiences = $query->latest()->paginate(12);
+        $categories = $this->getCategories();
+        $selectedCategory = $request->category ?? 'All';
+
+        return view('experiences.index', compact('experiences', 'categories', 'selectedCategory'));
     }
 
-    // “Yeni deneyim ekle” formu
+
+    // “Add New Experience” form
     public function create()
     {
         $categories = $this->getCategories();
@@ -24,7 +32,7 @@ class ExperienceController extends Controller
         return view('experiences.create', compact('categories'));
     }
 
-    // Form gönderildiğinde kaydetme işlemi
+    // Save when form is submitted
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -45,10 +53,10 @@ class ExperienceController extends Controller
 
         return redirect()
             ->route('experiences.index')
-            ->with('success', 'تمت إضافة التجربة بنجاح');
+            ->with('success', 'Experience added successfully');
     }
 
-    // Belirli kategoriye göre filtreleme
+    // Filter by specific category
     public function category($category)
     {
         $experiences = Experience::where('category', $category)->paginate(12);
@@ -57,14 +65,14 @@ class ExperienceController extends Controller
         return view('experiences.index', compact('experiences', 'categories', 'category'));
     }
 
-    // Kategori datalarını merkezi olarak tanımla
+    // Define categories centrally
     private function getCategories()
     {
-        $all = ['الطعام والشراب','الطبيعة والهواء الطلق','الرياضة','الفنون والثقافة','الموسيقى','الشواطئ'];
+        $all = ['Food & Drinks', 'Nature & Outdoors', 'Sports', 'Arts & Culture', 'Music', 'Beaches'];
         $counts = Experience::select('category')
             ->selectRaw('count(*) as cnt')
             ->groupBy('category')
-            ->pluck('cnt','category')
+            ->pluck('cnt', 'category')
             ->toArray();
 
         return collect($all)->map(fn($cat) => [
@@ -74,17 +82,17 @@ class ExperienceController extends Controller
         ])->toArray();
     }
 
-    // Kategoriye göre ikon eşleştirme
+    // Icon matching by category
     private function iconFor($category)
     {
         return match ($category) {
-            'الطعام والشراب'      => '🍽️',
-            'الطبيعة والهواء الطلق'=> '🌲',
-            'الرياضة'             => '🏔️',
-            'الفنون والثقافة'     => '🎨',
-            'الموسيقى'            => '🎵',
-            'الشواطئ'             => '🌊',
-            default                => '📌',
+            'Food & Drinks'      => '🍽️',
+            'Nature & Outdoors'  => '🌲',
+            'Sports'             => '🏔️',
+            'Arts & Culture'     => '🎨',
+            'Music'              => '🎵',
+            'Beaches'            => '🌊',
+            default              => '📌',
         };
     }
 }

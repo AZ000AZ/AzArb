@@ -11,7 +11,7 @@ class PropertyController extends Controller
     {
         $query = Property::query();
 
-        if ($request->filled('category') && $request->category !== 'الكل') {
+        if ($request->filled('category') && $request->category !== 'All') {
             $query->where('category', $request->category);
         }
 
@@ -64,7 +64,7 @@ class PropertyController extends Controller
 
         Property::create($data);
 
-        return redirect()->route('properties.index')->with('success', 'تمت إضافة الإقامة بنجاح');
+        return redirect()->route('properties.index')->with('success', 'Property added successfully');
     }
 
     public function show(Property $property)
@@ -100,13 +100,13 @@ class PropertyController extends Controller
 
         $property->update($data);
 
-        return redirect()->route('properties.index')->with('success', 'تم تحديث الإقامة بنجاح');
+        return redirect()->route('properties.index')->with('success', 'Property updated successfully');
     }
 
     public function destroy(Property $property)
     {
         $property->delete();
 
-        return redirect()->route('properties.index')->with('success', 'تم حذف الإقامة بنجاح');
+        return redirect()->route('properties.index')->with('success', 'Property deleted successfully');
     }
 }

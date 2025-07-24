@@ -5,25 +5,35 @@
             <!-- Logo -->
             <div class="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-3xl text-2xl font-bold shadow-xl hover:scale-105 transition cursor-pointer flex items-center space-x-2 space-x-reverse">
                 <i class="fas fa-compass"></i>
-                <span>رحلاتي</span>
+                <span>My Trips</span>
             </div>
 
             <!-- Navigation - Desktop -->
             <nav class="hidden md:flex items-center gap-4 mx-auto">
-                <a href="{{ route('home') }}" class="text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white transition">
-                    الرئيسية
+                <a href="{{ route('home') }}"
+                   class="px-4 py-2 rounded-full font-semibold transition
+       {{ request()->routeIs('home') ? 'bg-gradient-to-r from-pink-400 to-pink-600 text-white shadow-lg' : 'text-white/80 hover:text-white hover:bg-white/20' }}">
+                    Home
                 </a>
-                <a href="{{ route('properties.index') ?? '#' }}" class="text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white transition">
-                    الإقامات
+
+                <a href="{{ route('properties.index') }}"
+                   class="px-4 py-2 rounded-full font-semibold transition
+       {{ request()->routeIs('properties.index') ? 'bg-gradient-to-r from-purple-400 to-purple-600 text-white shadow-lg' : 'text-white/80 hover:text-white hover:bg-white/20' }}">
+                    Properties
                 </a>
-                <a href="{{ route('experiences.index') ?? '#' }}" class="bg-gradient-to-r from-red-400 to-pink-500 text-white shadow-lg font-semibold px-4 py-2 rounded-full transition">
-                    التجارب
+
+                <a href="{{ route('experiences.index') }}"
+                   class="px-4 py-2 rounded-full font-semibold transition
+       {{ request()->routeIs('experiences.index') ? 'bg-gradient-to-r from-red-400 to-pink-500 text-white shadow-lg' : 'text-white/80 hover:text-white hover:bg-white/20' }}">
+                    Experiences
                 </a>
-                <a href="{{ route('host') ?? '#' }}" class="text-white/80 font-semibold px-4 py-2 rounded-full hover:bg-white/20 hover:text-white transition">
-                    أصبح مضيفاً
+
+                <a href="{{ route('host') }}"
+                   class="px-4 py-2 rounded-full font-semibold transition
+       {{ request()->routeIs('host') ? 'bg-gradient-to-r from-red-400 to-pink-500  text-white shadow-lg' : 'text-white/80 hover:text-white hover:bg-white/20' }}">
+                    Services
                 </a>
             </nav>
-
             <!-- Icons -->
             <div class="flex items-center gap-2">
                 <!-- User Profile Dropdown -->
@@ -32,31 +42,41 @@
                         <i class="fas fa-user"></i>
                     </button>
 
-                    <div x-show="open" @click.away="open = false"
-                         x-transition:enter="dropdown-enter"
-                         x-transition:enter-active="dropdown-enter-active"
-                         class="absolute left-0 mt-2 w-56 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50">
-                        <a href="#" @click="handleProfileAction('الملف الشخصي')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                    <div
+                        x-show="open"
+                        @click.away="open = false"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 translate-y-2"
+                        class="absolute left-0 mt-2 w-56 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50"
+                    >
+                        <a href="#" @click="handleProfileAction('Profile')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-user w-4"></i>
-                            الملف الشخصي
+                            Profile
                         </a>
-                        <a href="#" @click="handleProfileAction('الحجوزات')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="#" @click="handleProfileAction('My Bookings')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-bookmark w-4"></i>
-                            حجوزاتي
+                            My Bookings
                         </a>
-                        <a href="#" @click="handleProfileAction('الإشعارات')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="#" @click="handleProfileAction('Notifications')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-bell w-4"></i>
-                            الإشعارات
+                            Notifications
                         </a>
-                        <a href="#" @click="handleProfileAction('الإعدادات')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="#" @click="handleProfileAction('Settings')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-cog w-4"></i>
-                            الإعدادات
+                            Settings
                         </a>
                         <hr class="my-2">
-                        <a href="#" @click="handleProfileAction('تسجيل الخروج')" class="flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 transition">
-                            <i class="fas fa-sign-out-alt w-4"></i>
-                            تسجيل الخروج
-                        </a>
+                        <form method="POST" action="{{ route('logout') }}" class="ml-4">
+                            @csrf
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                                Logout (Test)
+                            </button>
+                        </form>
+
                     </div>
                 </div>
 
@@ -66,67 +86,100 @@
                 </button>
 
                 <!-- Desktop Menu Button -->
-                <div class="relative hidden md:block" x-data="{ open: false }">
+                <div class="relative hidden md:block" x-data="{ open: false }" x-cloak>
                     <button @click="open = !open" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition">
                         <i class="fas fa-bars"></i>
                     </button>
 
-                    <div x-show="open" @click.away="open = false"
-                         x-transition:enter="dropdown-enter"
-                         x-transition:enter-active="dropdown-enter-active"
-                         class="absolute left-0 mt-2 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50">
-                        <a href="#" @click="handleProfileAction('المساعدة')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                            المساعدة والدعم
+                    <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50">
+                        <a href="#" @click="handleProfileAction('Help & Support')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                            Help & Support
                         </a>
-                        <a href="#" @click="handleProfileAction('الشروط')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                            الشروط والأحكام
+                        <a href="#" @click="handleProfileAction('Terms & Conditions')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                            Terms & Conditions
                         </a>
-                        <a href="#" @click="handleProfileAction('الخصوصية')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
-                            سياسة الخصوصية
+                        <a href="#" @click="handleProfileAction('Privacy Policy')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                            Privacy Policy
                         </a>
                     </div>
                 </div>
 
                 <!-- Favorites Button -->
-                <button @click="favoritesModalOpen = true" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition relative">
-                    <i class="fas fa-heart"></i>
-                    <span x-show="favorites.length > 0" x-text="favorites.length" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"></span>
-                </button>
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition relative">
+                        <i class="fas fa-heart"></i>
+                        <span x-show="favorites.length > 0" x-text="favorites.length" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"></span>
+                    </button>
+
+                    <!-- Favorites Dropdown -->
+                    <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50" x-cloak>
+                        <div x-show="favorites.length === 0" class="text-center py-6 px-4 text-gray-600 text-sm">
+                            <i class="fas fa-heart text-2xl text-red-500 mb-2"></i><br>
+                            No favorite items
+                        </div>
+
+                        <div x-show="favorites.length > 0" class="max-h-64 overflow-y-auto">
+                            <template x-for="item in favorites" :key="item.id">
+                                <div class="flex items-center gap-2 p-2 border-b border-gray-100 hover:bg-gray-50 transition">
+                                    <img :src="item.image" class="w-10 h-10 object-cover rounded">
+                                    <div class="flex-1">
+                                        <div class="text-sm font-medium text-gray-800" x-text="item.title"></div>
+                                        <div class="text-xs text-gray-500" x-text="item.location"></div>
+                                    </div>
+                                    <button @click="removeFavorite(item.id)" class="text-red-500 hover:text-red-700 transition">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Language Button -->
                 <button @click="languageModalOpen = true" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition">
                     <i class="fas fa-globe"></i>
                 </button>
+
             </div>
         </div>
     </header>
-
     <!-- Mobile Menu Modal -->
     <div x-show="mobileMenuOpen" x-transition:enter="modal-enter" x-transition:enter-active="modal-enter-active"
          class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" style="display: none;">
         <div @click.away="mobileMenuOpen = false" class="bg-white rounded-2xl p-6 m-4 w-full max-w-sm">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-gray-900">القائمة الرئيسية</h3>
+                <h3 class="text-xl font-bold text-gray-900">Main Menu</h3>
                 <button @click="mobileMenuOpen = false" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+
             <div class="space-y-4">
                 <a href="{{ route('home') }}" class="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded-lg transition">
-                    الرئيسية
+                    Home
                 </a>
-                <a href="{{ route('properties.index') ?? '#' }}" class="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded-lg transition">
-                    الإقامات
+                <a href="{{ route('properties.index') }}" class="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded-lg transition">
+                    Properties
                 </a>
-                <a href="{{ route('experiences.index') ?? '#' }}" class="block px-4 py-3 text-lg font-medium bg-gradient-to-r from-red-400 to-pink-500 text-white rounded-lg">
-                    التجارب
+                <a href="{{ route('experiences.index') }}" class="block px-4 py-3 text-lg font-medium bg-gradient-to-r from-red-400 to-pink-500 text-white rounded-lg">
+                    Experiences
                 </a>
-                <a href="{{ route('host') ?? '#' }}" class="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded-lg transition">
-                    أصبح مضيفاً
+                <a href="{{ route('host') }}" class="block px-4 py-3 text-lg font-medium hover:bg-gray-100 rounded-lg transition">
+                    Services
                 </a>
+
+                <!-- ✅ Logout Button -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="block w-full px-4 py-3 text-lg font-medium text-red-600 hover:bg-red-50 rounded-lg transition text-left">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
+
             </div>
         </div>
     </div>
+
 
     <!-- Favorites Modal -->
     <div x-show="favoritesModalOpen" x-transition:enter="modal-enter" x-transition:enter-active="modal-enter-active"
@@ -135,7 +188,7 @@
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <i class="fas fa-heart text-red-500"></i>
-                    المفضلة (<span x-text="favorites.length"></span>)
+                    Favorites (<span x-text="favorites.length"></span>)
                 </h3>
                 <button @click="favoritesModalOpen = false" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
@@ -145,8 +198,8 @@
             <div class="overflow-y-auto max-h-[60vh]">
                 <div x-show="favorites.length === 0" class="text-center py-12">
                     <i class="fas fa-heart text-6xl text-gray-300 mb-4"></i>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">لا توجد عناصر في المفضلة</h3>
-                    <p class="text-gray-600">ابدأ بإضافة الأماكن والتجارب المفضلة لديك</p>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No items in favorites</h3>
+                    <p class="text-gray-600">Start adding your favorite places and experiences</p>
                 </div>
 
                 <div x-show="favorites.length > 0" class="space-y-4">
@@ -176,7 +229,6 @@
             </div>
         </div>
     </div>
-
     <!-- Language Modal -->
     @include('components.language-modal')
 </div>
@@ -187,51 +239,30 @@
             mobileMenuOpen: false,
             favoritesModalOpen: false,
             languageModalOpen: false,
+
             currentLanguage: {
-                code: 'ar-WW',
-                language: 'العربية',
-                region: 'العالم'
+                code: 'en-US',
+                language: 'English',
+                region: 'World'
             },
+
             favorites: [
-                {
-                    id: '1',
-                    title: 'فيلا فاخرة في دبي',
-                    location: 'دبي، الإمارات',
-                    image: 'https://via.placeholder.com/150x100',
-                    price: '٨٥٠ ريال/ليلة',
-                    rating: 4.9
-                },
-                {
-                    id: '2',
-                    title: 'شاليه جبلي في أبها',
-                    location: 'أبها، السعودية',
-                    image: 'https://via.placeholder.com/150x100',
-                    price: '٣٢٠ ريال/ليلة',
-                    rating: 4.8
-                },
-                {
-                    id: '3',
-                    title: 'رحلة صحراوية',
-                    location: 'الرياض، السعودية',
-                    image: 'https://via.placeholder.com/150x100',
-                    price: '٤٥٠ ريال/شخص',
-                    rating: 4.7
-                }
+                // Example favorites...
             ],
 
             handleProfileAction(action) {
-                toastr.info(`تم النقر على: ${action}`);
+                toastr.info(`Clicked on: ${action}`);
             },
 
             removeFavorite(id) {
                 this.favorites = this.favorites.filter(item => item.id !== id);
-                toastr.success('تم حذف العنصر من المفضلة');
+                toastr.success('Item removed from favorites');
             },
 
             handleLanguageSelect(language) {
                 this.currentLanguage = language;
                 this.languageModalOpen = false;
-                toastr.success(`تم تغيير اللغة إلى ${language.language}`);
+                toastr.success(`Language changed to ${language.language}`);
             }
         }
     }

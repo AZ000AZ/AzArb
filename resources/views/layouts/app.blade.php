@@ -1,26 +1,21 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رحلاتي</title>
+    <title>My Trips</title>
 
-    <!-- Tailwind + App CSS (Vite üzerinden) -->
     @vite('resources/css/app.css')
 
-    <!-- TailwindCDN (lokalde sorun yaşarsan) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- AlpineJS (Dropdownlar ve Modallar için) -->
     <script src="https://unpkg.com/alpinejs" defer></script>
+    <style>[x-cloak] { display: none; }</style>
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-    <!-- Google Fonts Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    @include('partials.header-scripts')
 
     <style>
         body {
@@ -46,22 +41,27 @@
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        [x-cloak] { display: none; }
     </style>
 
     @stack('styles')
 </head>
+<body class="min-h-screen relative @yield('body_class')" style="@yield('body_style')">
 
-<body class="bg-gray-100 min-h-screen relative">
+
 
 @include('components.interactive-header')
 @include('components.server-status')
-
+@include('components.language-modal')
 
 <main class="py-8">
     @yield('content')
 </main>
-
-@include('partials.footer')
 
 @stack('scripts')
 

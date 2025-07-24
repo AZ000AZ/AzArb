@@ -1,35 +1,46 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\ExperienceController;
-use App\Http\Controllers\HostController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceController;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
-
-// Sadece iki host rotası olsun:
-Route::get('/host', [HostController::class, 'create'])->name('host');
-Route::post('/host', [HostController::class, 'store'])->name('host.store');
-
-// Diğer kaynaklar:
-Route::resource('properties', PropertyController::class);
-Route::resource('experiences', ExperienceController::class);
-Route::get('/experiences/category/{category}', [ExperienceController::class, 'category'])
-    ->name('experiences.category');
-Route::get('/experiences/create', [ExperienceController::class, 'create'])->name('experiences.create');
-Route::post('/experiences', [ExperienceController::class, 'store'])->name('experiences.store');
-Route::resource('experiences', ExperienceController::class);
-
-// API ve dil değişim rotaları burada...
-Route::prefix('api')->group(function () {
-    Route::get('/status', function () { return response()->json(['status' => 'online']); });
-    Route::post('/favorites/toggle', function () { return response()->json(['success' => true]); });
-    Route::post('/language/change', function () { return response()->json(['success' => true]); });
+// Sadece Welcome Sayfası Herkese Açık (Opsiyonel)
+Route::get('/', function () {
+    return view('welcome');
 });
-Route::get('/lang/{locale}', function ($locale) {
-    if (!in_array($locale, ['ar','tr','en'])) abort(400);
-    session()->put('locale', $locale);
-    return redirect()->back();
-})->name('lang.switch');
-Route::view('/host', 'host.index')->name('host');
 
+// Auth Routes (Breeze Auth Routes)
+require __DIR__.'/auth.php';
+
+// Giriş Yapmadan Hiçbir Sayfaya Erişilemesin (Dashboard Dahil)
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Ana Sayfa
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+    // Host (Servis Listeleme)
+    Route::get('/host', [ServiceController::class, 'index'])->name('host');
+
+    // Hizmet Oluşturma
+    Route::get('/host/create', [ServiceController::class, 'create'])->name('services.create');
+    Route::post('/host/store', [ServiceController::class, 'store'])->name('services.store');
+
+    // Properties CRUD
+    Route::resource('properties', PropertyController::class);
+
+    // Experiences CRUD
+    Route::resource('experiences', ExperienceController::class);
+
+    // Profil Yönetimi
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
