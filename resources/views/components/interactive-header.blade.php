@@ -53,32 +53,32 @@
                         x-transition:leave-end="opacity-0 translate-y-2"
                         class="absolute left-0 mt-2 w-56 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50"
                     >
-                        <a href="#" @click="handleProfileAction('Profile')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="{{ route('profile') }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-user w-4"></i>
                             Profile
                         </a>
-                        <a href="#" @click="handleProfileAction('My Bookings')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="{{ route('bookings') }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-bookmark w-4"></i>
                             My Bookings
                         </a>
-                        <a href="#" @click="handleProfileAction('Notifications')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="{{ route('notifications') }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-bell w-4"></i>
                             Notifications
                         </a>
-                        <a href="#" @click="handleProfileAction('Settings')" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="{{ route('settings') }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             <i class="fas fa-cog w-4"></i>
                             Settings
                         </a>
                         <hr class="my-2">
-                        <form method="POST" action="{{ route('logout') }}" class="ml-4">
+                        <form method="POST" action="{{ route('logout') }}" class="px-4">
                             @csrf
-                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+                            <button type="submit" class="w-full bg-red-500 text-white text-center py-2 rounded hover:bg-red-600 transition">
                                 Logout (Test)
                             </button>
                         </form>
-
                     </div>
                 </div>
+
 
                 <!-- Mobile Menu Button -->
                 <button @click="mobileMenuOpen = true" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition md:hidden">
@@ -91,47 +91,58 @@
                         <i class="fas fa-bars"></i>
                     </button>
 
-                    <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50">
-                        <a href="#" @click="handleProfileAction('Help & Support')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                    <div x-show="open" @click.outside="open = false"
+                         class="absolute left-0 mt-2 w-48 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50">
+                        <a href="{{ route('help') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             Help & Support
                         </a>
-                        <a href="#" @click="handleProfileAction('Terms & Conditions')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="{{ route('terms') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             Terms & Conditions
                         </a>
-                        <a href="#" @click="handleProfileAction('Privacy Policy')" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
+                        <a href="{{ route('privacy') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition">
                             Privacy Policy
                         </a>
                     </div>
                 </div>
 
-                <!-- Favorites Button -->
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition relative">
-                        <i class="fas fa-heart"></i>
-                        <span x-show="favorites.length > 0" x-text="favorites.length" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold"></span>
+
+                <!-- ❤️ Favorites Dropdown -->
+                <div x-data="{ open: false }" class="relative">
+                    <button @click="open = !open"
+                            class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition">
+                        <i class="fas fa-heart text-white text-xl"></i>
                     </button>
 
-                    <!-- Favorites Dropdown -->
-                    <div x-show="open" @click.away="open = false" class="absolute left-0 mt-2 w-64 bg-white/95 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 py-2 z-50" x-cloak>
-                        <div x-show="favorites.length === 0" class="text-center py-6 px-4 text-gray-600 text-sm">
-                            <i class="fas fa-heart text-2xl text-red-500 mb-2"></i><br>
-                            No favorite items
-                        </div>
+                    <div x-show="open" @click.outside="open = false"
+                         class="absolute right-0 mt-2 bg-white text-gray-800 w-60 shadow-lg rounded-lg p-4 z-50 text-center">
 
-                        <div x-show="favorites.length > 0" class="max-h-64 overflow-y-auto">
-                            <template x-for="item in favorites" :key="item.id">
-                                <div class="flex items-center gap-2 p-2 border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <img :src="item.image" class="w-10 h-10 object-cover rounded">
-                                    <div class="flex-1">
-                                        <div class="text-sm font-medium text-gray-800" x-text="item.title"></div>
-                                        <div class="text-xs text-gray-500" x-text="item.location"></div>
-                                    </div>
-                                    <button @click="removeFavorite(item.id)" class="text-red-500 hover:text-red-700 transition">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </template>
-                        </div>
+                        @auth
+                            @if(auth()->user()->favorites && auth()->user()->favorites->count())
+                                <ul class="text-left space-y-2">
+                                    @foreach(auth()->user()->favorites as $fav)
+                                        <li class="border-b pb-1">{{ $fav->title ?? 'Untitled' }}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="text-red-500 text-lg"><i class="fas fa-heart"></i></div>
+                                <p class="text-sm text-gray-600 mt-1">No favorite items</p>
+                            @endif
+
+                            <!-- ✅ Link to full favorites page -->
+                            <div class="mt-4">
+                                <a href="{{ route('favorites.index') }}"
+                                   class="inline-block text-sm text-blue-600 hover:text-blue-800 underline">
+                                    View All Favorites
+                                </a>
+                            </div>
+
+                        @else
+                            <div class="text-red-500 text-lg"><i class="fas fa-heart"></i></div>
+                            <p class="text-sm text-gray-600 mt-1">
+                                Please <a href="{{ route('login') }}" class="text-blue-500 underline">login</a> to view favorites.
+                            </p>
+                        @endauth
+
                     </div>
                 </div>
 

@@ -23,12 +23,10 @@ class ExperienceController extends Controller
         return view('experiences.index', compact('experiences', 'categories', 'selectedCategory'));
     }
 
-
     // “Add New Experience” form
     public function create()
     {
         $categories = $this->getCategories();
-
         return view('experiences.create', compact('categories'));
     }
 
@@ -56,7 +54,52 @@ class ExperienceController extends Controller
             ->with('success', 'Experience added successfully');
     }
 
-    // Filter by specific category
+    // Edit form
+    public function edit($id)
+    {
+        $experience = Experience::findOrFail($id);
+        $categories = $this->getCategories();
+        return view('experiences.edit', compact('experience', 'categories'));
+    }
+
+    // Update action
+    public function update(Request $request, $id)
+    {
+        $experience = Experience::findOrFail($id);
+
+        $data = $request->validate([
+            'title'       => 'required|string|max:255',
+            'description' => 'required|string',
+            'price'       => 'required|numeric',
+            'city'        => 'required|string|max:255',
+            'category'    => 'required|string|max:255',
+            'rating'      => 'nullable|numeric|min:0|max:5',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('experiences', 'public');
+        }
+
+        $experience->update($data);
+
+        return redirect()
+            ->route('experiences.index')
+            ->with('success', 'Experience updated successfully!');
+    }
+
+    // Delete action
+    public function destroy($id)
+    {
+        $experience = Experience::findOrFail($id);
+        $experience->delete();
+
+        return redirect()
+            ->route('experiences.index')
+            ->with('success', 'Experience deleted successfully!');
+    }
+
+    // Optional category filter
     public function category($category)
     {
         $experiences = Experience::where('category', $category)->paginate(12);

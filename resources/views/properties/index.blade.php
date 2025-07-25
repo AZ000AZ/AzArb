@@ -146,6 +146,22 @@
                             <h3 class="text-white font-bold text-lg mb-1 truncate">{{ $property->title }}</h3>
                             <p class="text-white/70 text-sm"><i class="fas fa-map-marker-alt me-1 text-pink-400"></i> {{ $property->location }}</p>
                         </div>
+                        <!-- Action Buttons -->
+                        <div class="flex gap-2 mt-4">
+                            <a href="{{ route('properties.edit', $property->id) }}"
+                               class="flex-1 bg-green-500 hover:bg-green-600 text-white text-center py-1 rounded-lg font-medium">
+                                <i class="fas fa-edit me-1"></i> Edit
+                            </a>
+                            <form action="{{ route('properties.destroy', $property->id) }}" method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete this property?');" class="flex-1">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="w-full bg-red-500 hover:bg-red-600 text-white py-1 rounded-lg font-medium">
+                                    <i class="fas fa-trash me-1"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+
                         <div class="flex justify-between items-center mt-3">
                             <span class="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold">{{ number_format($property->price) }} SAR/Night</span>
                             <span class="text-yellow-400 text-sm flex items-center"><i class="fas fa-star me-1"></i>{{ $property->rating ?? '4.8' }}</span>

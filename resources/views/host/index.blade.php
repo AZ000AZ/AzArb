@@ -103,9 +103,29 @@
                                 <span><i class="fas fa-map-marker-alt"></i> {{ $service->location }}</span>
                                 <span><i class="fas fa-calendar"></i> {{ $service->available_date }}</span>
                             </div>
+
+                            <!-- ✅ Düzenle / Sil Butonları -->
+                            <div class="flex justify-between items-center mt-4">
+                                <!-- Edit -->
+                                <a href="{{ route('services.edit', $service->id) }}"
+                                   class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                                    ✏️ Edit
+                                </a>
+
+                                <!-- Delete -->
+                                <form action="{{ route('services.destroy', $service->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this service?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                                        🗑️ Delete
+                                    </button>
+                                </form>
+                            </div>
+                            <!-- ❌ /Düzenle / Sil -->
                         </div>
                     </div>
                 @endforeach
+
             </div>
         </div>
     </section>
